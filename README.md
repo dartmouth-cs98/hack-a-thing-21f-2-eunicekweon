@@ -7,7 +7,8 @@ After this, I have decided to continue looking into Google Flutter, but instead 
 This games is a simple game we all have probably played once in our life called Snake.
 
 Screenshots
-
+[![Screen-Shot-2021-09-29-at-11-43-42-AM.png](https://i.postimg.cc/V6sPhNGT/Screen-Shot-2021-09-29-at-11-43-42-AM.png)](https://postimg.cc/d7ffkJKm)
+[![Screen-Shot-2021-09-29-at-11-43-58-AM.png](https://i.postimg.cc/rp8HVP1R/Screen-Shot-2021-09-29-at-11-43-58-AM.png)](https://postimg.cc/PCRyKKFd)
 
 ## Who Did What?
 
