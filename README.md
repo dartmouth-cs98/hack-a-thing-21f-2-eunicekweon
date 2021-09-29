@@ -32,7 +32,7 @@ Outcome: Working 2D Snake Game with Android Studio
 
 ## Acknowledgments
 
-First Hack-A-Thing Repository Link:
+First Hack-A-Thing Repository Link: https://github.com/dartmouth-cs98/hack-a-thing-21f-1-eunicekweon
 
 Tutorials:
 https://www.udemy.com/course/create-a-game-in-flutter-dart/?utm_source=adwords&utm_medium=udemyads&utm_campaign=DSA_Catchall_la.EN_cc.US&utm_content=deal4584&utm_term=_._ag_95911180068_._ad_532194018659_._kw__._de_c_._dm__._pl__._ti_dsa-40560456653_._li_1021873_._pd__._&matchtype=b&gclid=CjwKCAjwndCKBhAkEiwAgSDKQa3_ALdKe0PkxNtSPbWYppQdQN_CancZna2Owex5XKsgdR-OwOJybhoC6QgQAvD_BwE
