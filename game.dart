@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_snake_game/direction_type.dart';
 
+import 'control_panel.dart';
 import 'direction.dart';
+import 'direction_type.dart';
 import 'piece.dart';
 
 class GamePage extends StatefulWidget {
@@ -31,7 +32,18 @@ class _GamePageState extends State<GamePage> {
   int score = 0;
 
   void draw() async {
-    // TODO
+    if (positions.length == 0) {
+      positions.add(getRandomPositionWithinRange());
+    }
+
+    while (length > positions.length) {
+      positions.add(positions[positions.length - 1]);
+    }
+
+    for (int i = positions.length - 1; i > 0; i--) {
+      positions[i] = positions[i - 1];
+    }
+    positions[0] = await getNextPosition(positions[0]);
   }
 
   Direction getRandomDirection([DirectionType type]) {
@@ -62,7 +74,17 @@ class _GamePageState extends State<GamePage> {
   }
 
   bool detectCollision(Offset position) {
-    // TODO
+    if (position.dx >= upperBoundX && direction == Direction.right) {
+      return true;
+    } else if (position.dx <= lowerBoundX && direction == Direction.left) {
+      return true;
+    } else if (position.dy >= upperBoundY && direction == Direction.down) {
+      return true;
+    } else if (position.dy <= lowerBoundY && direction == Direction.up) {
+      return true;
+    }
+
+    return false;
   }
 
   void showGameOverDialog() {
@@ -104,19 +126,79 @@ class _GamePageState extends State<GamePage> {
   }
 
   Future<Offset> getNextPosition(Offset position) async {
-    // TODO
+    Offset nextPosition;
+
+    if (detectCollision(position) == true) {
+      if (timer != null && timer.isActive) timer.cancel();
+      await Future.delayed(Duration(milliseconds: 500), () => showGameOverDialog());
+      return position;
+    }
+
+    if (direction == Direction.right) {
+      nextPosition = Offset(position.dx + step, position.dy);
+    } else if (direction == Direction.left) {
+      nextPosition = Offset(position.dx - step, position.dy);
+    } else if (direction == Direction.up) {
+      nextPosition = Offset(position.dx, position.dy - step);
+    } else if (direction == Direction.down) {
+      nextPosition = Offset(position.dx, position.dy + step);
+    }
+
+    return nextPosition;
   }
 
   void drawFood() {
-    // TODO
+    if (foodPosition == null) {
+      foodPosition = getRandomPositionWithinRange();
+    }
+
+    if (foodPosition == positions[0]) {
+      length++;
+      speed = speed + 0.25;
+      score = score + 5;
+      changeSpeed();
+
+      foodPosition = getRandomPositionWithinRange();
+    }
+
+    food = Piece(
+      posX: foodPosition.dx.toInt(),
+      posY: foodPosition.dy.toInt(),
+      size: step,
+      color: Color(0XFF8EA604),
+      isAnimated: true,
+    );
   }
 
   List<Piece> getPieces() {
-    // TODO
+    List<Piece> pieces = [];
+    draw();
+    drawFood();
+
+    for (int i = 0; i < length; ++i) {
+      if (i >= positions.length) {
+        continue;
+      }
+
+      pieces.add(
+        Piece(
+          posX: positions[i].dx.toInt(),
+          posY: positions[i].dy.toInt(),
+          size: step,
+          color: Colors.red,
+        ),
+      );
+    }
+
+    return pieces;
   }
 
   Widget getControls() {
-    // TODO
+    return ControlPanel(
+      onTapped: (Direction newDirection) {
+        direction = newDirection;
+      },
+    );
   }
 
   int roundToNearestTens(int num) {
@@ -129,15 +211,32 @@ class _GamePageState extends State<GamePage> {
   }
 
   void changeSpeed() {
-    // TODO
+    if (timer != null && timer.isActive) timer.cancel();
+
+    // if you want timer to tick at fixed duration.
+    timer = Timer.periodic(Duration(milliseconds: 200 ~/ speed), (timer) {
+      setState(() {});
+    });
   }
 
   Widget getScore() {
-    // TODO
+    return Positioned(
+      top: 50.0,
+      right: 40.0,
+      child: Text(
+        "Score: " + score.toString(),
+        style: TextStyle(fontSize: 24.0),
+      ),
+    );
   }
 
   void restart() {
-    // TODO
+    score = 0;
+    length = 5;
+    positions = [];
+    direction = getRandomDirection();
+    speed = 1;
+    changeSpeed();
   }
 
   Widget getPlayAreaBorder() {
@@ -179,7 +278,17 @@ class _GamePageState extends State<GamePage> {
       body: Container(
         color: Color(0XFFF5BB00),
         child: Stack(
-          children: [],
+          children: [
+            getPlayAreaBorder(),
+            Container(
+              child: Stack(
+                children: getPieces(),
+              ),
+            ),
+            food,
+            getControls(),
+            getScore(),
+          ],
         ),
       ),
     );
